@@ -1,0 +1,27 @@
+Stock		Multiplikator	Einsatz									Faktor-Einsatz	Einsatz-Kosten-Minimum
+
+Aktien:  	1-5			10€ --> Einkauf 0,25€, Verkauf: 0,25€		?				0,25€
+						20€ --> Einkauf 0,25€, Verkauf: 0,25€	
+						30€ --> Einkauf 0,25€, Verkauf: 0,25€
+							
+Gold:		1-20		20€ --> Einkauf 0,4€, Verkauf: 0,4€			0.25			0,4€
+						50€ --> Einkauf 1,0€, Verkauf: 1,0€
+						60€ --> Einkauf 1,20€, Verkauf: 1,20€
+						100€ --> Einkauf 2,0€, Verkauf: 2,0€
+
+
+Indizes:	1-20		20€ --> Einkauf 0,25€, Verkauf: 0,25€						0,25€	
+						50€ --> Einkauf 0,6€, Verkauf: 0,6€
+						60€ --> Einkauf 0,72€, Verkauf: 0,72€
+							
+Silber:					60€ --> Einkauf 0,6€, Verkauf: 0,57€						0,20€
+						70€ --> Einkauf 0,7€, Verkauf: 0,69€
+						140€ --> Einkauf 1,4€, Verkauf: 1,41€
+
+Devisen:	1-33		30€ --> Einkauf 0,5€, Verkauf: 0,49€
+	
+Öl:			1-20		40€ --> Einkauf 0,3€, Verkauf: 0,3€
+						40€ --> Einkauf 0,4€, Verkauf: 0,4€
+						50€ --> Einkauf 0,5€, Verkauf: 0,5€
+
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <!-- property name="LOG_FILE" value="../logs/app.log"/-->
+    <property name="LOG_FILE" value="/logs/app.log"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<logger name="de.goldmann.comercio" level="INFO" />
+    <root level="WARN">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
