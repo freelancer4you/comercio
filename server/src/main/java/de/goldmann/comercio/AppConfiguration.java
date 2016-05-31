@@ -1,5 +1,8 @@
 package de.goldmann.comercio;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 //import static de.goldmann.comercio.domain.AppQeues.ORDERS_ADD_REQUEST;
 //import static de.goldmann.comercio.domain.AppQeues.USERS_LIST_REQUEST;
 //
@@ -11,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,11 +24,13 @@ import org.springframework.jms.core.JmsTemplate;
 //import de.goldmann.comercio.server.jms.UserListRequestListener;
 
 import de.goldmann.comercio.server.services.amq.AmqServices;
+import de.goldmann.comercio.server.stock.poll.StockInfo;
+import de.goldmann.comercio.server.stock.poll.StockPublisher;
 
-@org.springframework.context.annotation.Configuration
-public class Configuration
+@Configuration
+public class AppConfiguration
 {
-    private static final Logger logger    = LoggerFactory.getLogger(Configuration.class);
+    private static final Logger logger    = LoggerFactory.getLogger(AppConfiguration.class);
     private final static String config    = "org/apache/activemq/broker.xml";
     private final String        brokerUrl = "tcp://localhost:61616";
 
@@ -33,6 +39,16 @@ public class Configuration
     {
         return new AmqServices(pooledFactory(), jmsTemplate());
     }
+
+	@Bean
+	public BlockingQueue<StockInfo> queue() {
+		return new ArrayBlockingQueue<StockInfo>(1024);
+	}
+
+	@Bean
+	public StockPublisher publisher() {
+		return new StockPublisher(queue());
+	}
 
     //
     // @Autowired

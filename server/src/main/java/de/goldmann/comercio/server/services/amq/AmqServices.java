@@ -4,8 +4,11 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.jms.Connection;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 
+import org.apache.activemq.advisory.DestinationEvent;
+import org.apache.activemq.advisory.DestinationListener;
 import org.apache.activemq.advisory.DestinationSource;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
@@ -90,24 +93,34 @@ public class AmqServices
         return Collections.emptySet();
     }
 
-    public String sendMessage(String dest, String destType, String msg)
+	public String sendMessage(String destinationName, String destType, String msg)
     {
         // System.out.println("dest:" + dest);
         // System.out.println("destType:" + destType);
         // System.out.println("msg:" + msg);
-        String destPrefix = "/queue/";
-        if ("".equals(destType))
+		// String destPrefix = "/queue/";
+		Destination dest = null;
+		if ("Topic".equals(destType))
         {
-            destPrefix = "/topic/";
+			dest = new ActiveMQTopic(destinationName);
+		} else if ("Queue".equals(destType)) {
+			dest = new ActiveMQQueue(destinationName);
         }
-        String destinationName = destPrefix + dest;
-        jmsTemplate.send(destinationName, JmsUtils.generateJmsMessage(msg));
-        return "Message send to '" + destinationName + "'";
+
+		jmsTemplate.send(dest, JmsUtils.generateJmsMessage(msg));
+		return "Message send to '" + dest + "'";
     }
 
     private DestinationSource getDestinationSources(Connection connection) throws JMSException
     {
         final DestinationSource destinationSource = ((PooledConnection) connection).getDestinationSource();
+		destinationSource.setDestinationListener(new DestinationListener() {
+
+			@Override
+			public void onDestinationEvent(DestinationEvent arg0) {
+				System.out.println(arg0);
+			}
+		});
         destinationSource.start();
         return destinationSource;
     }

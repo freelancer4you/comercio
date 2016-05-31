@@ -37,7 +37,9 @@ import de.goldmann.comercio.server.services.amq.AmqServices;
 public class AmqView extends VerticalLayout implements View
 {
 
-    private static final String     TOPICS_TAB_HEADER = "Topics";
+    private static final String ACTIONS_TAB_HEADER = "Actions";
+
+	private static final String     TOPICS_TAB_HEADER = "Topics";
 
     private static final String     QUEUES_TAB_HEADER = "Queues";
 
@@ -53,9 +55,6 @@ public class AmqView extends VerticalLayout implements View
     private TabSheet                tabsheet;
 
     @Autowired
-    private PooledConnectionFactory factory;
-
-    @Autowired
     private AmqServices             amqService;
 
     private Indexed                 queuesDataSource;
@@ -69,14 +68,37 @@ public class AmqView extends VerticalLayout implements View
         {
             tabsheet = new TabSheet();
 
+			// Create the first tab
+			VerticalLayout tabQueues = new VerticalLayout();
+			Grid queuesGrid = buildQueuesGrid();
+			queuesDataSource = queuesGrid.getContainerDataSource();
+			tabQueues.addComponent(queuesGrid);
+			tabsheet.addTab(tabQueues, QUEUES_TAB_HEADER);
+
+			// This tab gets its caption from the component caption
+			VerticalLayout tabTopics = new VerticalLayout();
+			Grid topicsGrid = buildTopicsGrid();
+			topicsDataSource = topicsGrid.getContainerDataSource();
+			tabTopics.addComponent(topicsGrid);
+			tabsheet.addTab(tabTopics, TOPICS_TAB_HEADER);
+
+			VerticalLayout tabTests = new VerticalLayout();
+			tabTests.addComponent(getActions());
+			tabsheet.addTab(tabTests, ACTIONS_TAB_HEADER);
+
             tabsheet.addSelectedTabChangeListener(new TabSheet.SelectedTabChangeListener()
             {
-                @Override
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				@Override
                 public void selectedTabChange(SelectedTabChangeEvent event)
                 {
-                    // Find the tabsheet
-                    TabSheet tabsheet = event.getTabSheet();
-                    if (TOPICS_TAB_HEADER.equals(tabsheet.getCaption()))
+
+					final int selectedTabIndex = getSelectedTabIndex();
+					if (selectedTabIndex == 0)
                     {
                         topicsDataSource.removeAllItems();
 
@@ -85,7 +107,7 @@ public class AmqView extends VerticalLayout implements View
                             topicsDataSource.addItem(topic);
                         }
                     }
-                    else if (QUEUES_TAB_HEADER.equals(tabsheet.getCaption()))
+					else if (selectedTabIndex == 1)
                     {
                         queuesDataSource.removeAllItems();
 
@@ -98,26 +120,16 @@ public class AmqView extends VerticalLayout implements View
             });
 
             addComponent(tabsheet);
-
-            // Create the first tab
-            VerticalLayout tabQueues = new VerticalLayout();
-            Grid queuesGrid = buildQueuesGrid();
-            queuesDataSource = queuesGrid.getContainerDataSource();
-            tabQueues.addComponent(queuesGrid);
-            tabsheet.addTab(tabQueues, QUEUES_TAB_HEADER);
-
-            // This tab gets its caption from the component caption
-            VerticalLayout tabTopics = new VerticalLayout();
-            Grid topicsGrid = buildTopicsGrid();
-            topicsDataSource = topicsGrid.getContainerDataSource();
-            tabTopics.addComponent(topicsGrid);
-            tabsheet.addTab(tabTopics, TOPICS_TAB_HEADER);
-
-            VerticalLayout tabTests = new VerticalLayout();
-            tabTests.addComponent(getActions());
-            tabsheet.addTab(tabTests, "Actions");
         }
     }
+
+	private int getSelectedTabIndex() {
+		int index = -1;
+		if (tabsheet.getComponentCount() > 0) {
+			index = tabsheet.getTabPosition(tabsheet.getTab(tabsheet.getSelectedTab()));
+		}
+		return index;
+	}
 
     private Grid buildQueuesGrid()
     {

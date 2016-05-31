@@ -2,6 +2,8 @@ package de.goldmann.comercio.transfer.down;
 
 import java.io.Serializable;
 
+import de.goldmann.comercio.domain.order.OrderDirection;
+
 public class OrderRow implements Serializable
 {
     /**
@@ -12,22 +14,34 @@ public class OrderRow implements Serializable
     private String            login;
     private long              time;
     private int               lineNumber;
+	private OrderDirection direction;
+	private String stockName;
 
     // JSON
     public OrderRow()
     {}
 
-    public OrderRow(long orderOd, String login, long time, int lineNumber)
+	public OrderRow(long orderOd, String login, String stockName, long time, OrderDirection direction, int lineNumber)
     {
         this.orderOd = orderOd;
         this.login = login;
+		this.stockName = stockName;
         this.time = time;
+		this.direction = direction;
         this.lineNumber = lineNumber;
     }
 
-    /**
-     * @return the lineNumber
-     */
+	public OrderDirection getDirection() {
+		return direction;
+	}
+
+	public String getStockName() {
+		return stockName;
+	}
+
+	/**
+	 * @return the lineNumber
+	 */
     public int getLineNumber()
     {
         return lineNumber;

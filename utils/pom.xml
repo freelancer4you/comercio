@@ -9,18 +9,25 @@
 	<artifactId>utils</artifactId>
 
 	<dependencies>
-		<!-- dependency>
-		    <groupId>org.apache.activemq</groupId>
-		    <artifactId>activemq-core</artifactId>		    
-		</dependency-->
+		<!-- dependency> <groupId>org.apache.activemq</groupId> <artifactId>activemq-core</artifactId> 
+			</dependency -->
 		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>
 			<artifactId>geronimo-jms_1.1_spec</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-        </dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.yahoofinance-api</groupId>
+		    <artifactId>YahooFinanceAPI</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

@@ -9,4 +9,6 @@ import de.goldmann.comercio.domain.order.Stock;
 public interface StockRepository extends JpaRepository<Stock, Long>
 {
     Stock findByName(@Param("name") String name);
+
+	Stock findBySearchKey(@Param("key") String key);
 }

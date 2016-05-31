@@ -5,12 +5,11 @@ import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
-import static de.goldmann.comercio.domain.AppQeues.*;
 
 @Component
 public class UsersListRequestSender
@@ -31,11 +30,13 @@ public class UsersListRequestSender
             @Override
             public Message createMessage(Session session) throws JMSException
             {
-                final TextMessage createTextMessage = session.createTextMessage("Load users");
-                createTextMessage.setJMSReplyTo(new ActiveMQQueue(USERS_LIST_RESPONSE));
+				final TextMessage createTextMessage = session.createTextMessage("loca");
+				// createTextMessage.setJMSReplyTo(new
+				// ActiveMQQueue(USERS_LIST_RESPONSE));
                 return createTextMessage;
             }
         };
-        jmsTemplate.send(USERS_LIST_REQUEST, messageCreator);
+		// jmsTemplate.send(USERS_LIST_REQUEST, messageCreator);
+		jmsTemplate.send(new ActiveMQTopic("demo"), messageCreator);
     }
 }

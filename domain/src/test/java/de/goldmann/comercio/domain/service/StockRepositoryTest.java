@@ -33,7 +33,7 @@ public class StockRepositoryTest
         Stock stock = new Stock();
         stock.setName(name);
         stock.setCurrency("USD");
-        stock.setYahooSearchKey(yahooSearchKey);
+		stock.setSearchKey(yahooSearchKey);
         return stock;
     }
 

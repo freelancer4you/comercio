@@ -52,6 +52,5 @@ public class OrdersView extends VerticalLayout implements View
     {
         grid.getContainerDataSource().removeAllItems();
         grid.setContainerDataSource(new BeanItemContainer(Order.class, orderRepo.findAll()));
-
     }
 }

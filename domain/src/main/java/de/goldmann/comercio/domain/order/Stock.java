@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Stock implements Serializable
@@ -37,8 +40,8 @@ public class Stock implements Serializable
     /**
      * 
      */
-    @Column(nullable = false, name = "yahoosearchkey")
-    private String            yahooSearchKey;
+	@Column(nullable = false, name = "searchkey", unique = true)
+    private String            searchKey;
 
     /**
      * 
@@ -46,10 +49,20 @@ public class Stock implements Serializable
     @Column(nullable = false)
     private String            currency;
 
-    @Column(name = "isindex")
-    private boolean           isindex;
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "LEADINGINDEX_ID")
+	private LeadingIndex leadingIndex;
 
-    public Stock()
+
+	public LeadingIndex getLeadingIndex() {
+		return leadingIndex;
+	}
+
+	public void setLeadingIndex(LeadingIndex leadingIndex) {
+		this.leadingIndex = leadingIndex;
+	}
+
+	public Stock()
     {}
 
     /**
@@ -92,21 +105,8 @@ public class Stock implements Serializable
         return wkn;
     }
 
-    /**
-     * Getter of yahooSearchKey
-     */
-    public String getYahooSearchKey()
-    {
-        return yahooSearchKey;
-    }
 
-    /**
-     * @return the isindex
-     */
-    public boolean isIsindex()
-    {
-        return isindex;
-    }
+
 
     /**
      * Setter of currency
@@ -133,14 +133,6 @@ public class Stock implements Serializable
         this.isin = isin;
     }
 
-    /**
-     * @param isindex
-     *            the isindex to set
-     */
-    public void setIsindex(boolean isindex)
-    {
-        this.isindex = isindex;
-    }
 
     /**
      * Setter of name
@@ -158,26 +150,23 @@ public class Stock implements Serializable
         this.wkn = wkn;
     }
 
-    /**
-     * Setter of yahooSearchKey
-     */
-    public void setYahooSearchKey(String yahooSearchKey)
-    {
-        this.yahooSearchKey = yahooSearchKey;
-    }
+	public String getSearchKey() {
+		return searchKey;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        return "Stock [" + (name != null ? "name=" + name + ", " : "")
-                + (isin != null ? "isin=" + isin + ", " : "") + (wkn != null ? "wkn=" + wkn + ", " : "")
-                + (yahooSearchKey != null ? "yahooSearchKey=" + yahooSearchKey + ", " : "")
-                + (currency != null ? "currency=" + currency + ", " : "") + "isindex=" + isindex + "]";
-    }
+	public void setSearchKey(String searchKey) {
+		this.searchKey = searchKey;
+	}
+
+	@Override
+	public String toString() {
+		return "Stock [" + (name != null ? "name=" + name + ", " : "") + (isin != null ? "isin=" + isin + ", " : "")
+				+ (wkn != null ? "wkn=" + wkn + ", " : "") + (searchKey != null ? "searchKey=" + searchKey + ", " : "")
+				+ (currency != null ? "currency=" + currency + ", " : "")
+				+ (leadingIndex != null ? "leadingIndex=" + leadingIndex : "") + "]";
+	}
+
+
+
 
 }

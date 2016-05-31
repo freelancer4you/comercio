@@ -45,14 +45,6 @@
             For more information, see:
             http://activemq.apache.org/producer-flow-control.html
         -->
-        
-        <destinations>
- 
-      <queue physicalName="FOO.BAR" />
- 
-      <topic physicalName="SOME.TOPIC" />
- 
-    </destinations>
               
         <destinationPolicy>
             <policyMap>
@@ -135,7 +127,7 @@
             <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
             <transportConnector name="ssl" uri="ssl://0.0.0.0:61617"/>
             <transportConnector name="stomp" uri="stomp://0.0.0.0:61613"/>
-            
+            <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>            
         </transportConnectors>
 
     </broker>

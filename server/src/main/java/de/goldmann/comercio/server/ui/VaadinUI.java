@@ -6,8 +6,10 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
@@ -24,10 +26,14 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
+import de.goldmann.comercio.server.stock.poll.StockInfo;
+import de.goldmann.comercio.server.stock.poll.StockPublisher;
 import de.goldmann.comercio.server.ui.amq.AmqView;
+import de.goldmann.comercio.server.ui.market.MarketView;
 import de.goldmann.comercio.server.ui.orders.OrdersView;
 import de.goldmann.comercio.server.ui.users.UsersView;
 
+@Push
 @SpringUI
 @Theme("valo")
 public class VaadinUI extends UI
@@ -37,7 +43,6 @@ public class VaadinUI extends UI
      */
     private static final long                   serialVersionUID = 1L;
 
-    // private final TestIcon testIcon = new TestIcon(100);
     final ValoMenuLayout                        root             = new ValoMenuLayout();
 
     final ComponentContainer                    viewDisplay      = root.getContentContainer();
@@ -52,10 +57,13 @@ public class VaadinUI extends UI
     @Autowired
     private SpringViewProvider                  viewProvider;
 
+	@Autowired
+	private StockPublisher stockPublisher;
+
     @Override
     protected void init(VaadinRequest vaadinRequest)
     {
-        getPage().setTitle("Guidants");
+		getPage().setTitle("Guidants");
         setContent(root);
         root.setWidth("100%");
 
@@ -67,6 +75,7 @@ public class VaadinUI extends UI
         navigator.addView(UsersView.USERS, UsersView.class);
         navigator.addView(OrdersView.ORDERS, OrdersView.class);
         navigator.addView(AmqView.AMQ, AmqView.class);
+		navigator.addView(MarketView.MARKET, MarketView.class);
 
         final String f = Page.getCurrent().getUriFragment();
         if (f == null || f.equals(""))
@@ -114,13 +123,46 @@ public class VaadinUI extends UI
                 return true;
             }
         });
-    }
+
+		new Thread(new QueueListener(stockPublisher)).start();
+	}
+
+	class QueueListener implements Runnable {
+		private StockPublisher stockPublisher = null;
+
+		public QueueListener(StockPublisher stockPublisher) {
+			this.stockPublisher = stockPublisher;
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+
+					final View view = navigator.getCurrentView();
+					if (view instanceof MarketView) {
+						final StockInfo info = stockPublisher.take();
+						access(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									((MarketView) view).updateView(info);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						});
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
     CssLayout buildMenu()
     {
-        // Add items
-        // menuItems.put(Desktop.DESKTOP, "Desktop");
-        // menuItems.put(Charts.CHARTS, "Charts");
 
         final HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
@@ -128,54 +170,13 @@ public class VaadinUI extends UI
         top.addStyleName(ValoTheme.MENU_TITLE);
         menu.addComponent(top);
 
-        // final MenuBar settings = new MenuBar();
-        // settings.addStyleName("user-menu");
-        // final StringGenerator sg = new StringGenerator();
-        // final MenuItem settingsItem = settings.addItem(
-        // sg.nextString(true) + " " + sg.nextString(true) + sg.nextString(false), new ThemeResource(
-        // "../tests-valo/img/profile-pic-300px.jpg"), null);
-        // settingsItem.addItem("Edit Profile", null);
-        // settingsItem.addItem("Preferences", null);
-        // settingsItem.addSeparator();
-        // settingsItem.addItem("Sign Out", null);
-        // menu.addComponent(settings);
-
-        // menuItemsLayout.setPrimaryStyleName("valo-menuitems");
         menuItemsLayout.setPrimaryStyleName(ValoTheme.MENU_ITEM);
         menu.addComponent(menuItemsLayout);
 
         addMenuEntry("../mytheme/img/pc3_white.png", UsersView.USERS, "Users");
         addMenuEntry("../mytheme/img/chart.png", OrdersView.ORDERS, "Orders");
         addMenuEntry("../mytheme/img/chart.png", AmqView.AMQ, "AMQ");
-        // addMenuEntry("../mytheme/img/bell.png", Alarms.ALARMS, "Kursalarme");
-
-        // int count = -1;
-        // for (final Entry<String, String> item : menuItems.entrySet())
-        // {
-        // final Button b = new Button(item.getValue(), new ClickListener()
-        // {
-        // /**
-        // *
-        // */
-        // private static final long serialVersionUID = 1L;
-        //
-        // @Override
-        // public void buttonClick(final ClickEvent event)
-        // {
-        // navigator.navigateTo(item.getKey());
-        // }
-        // });
-        // if (count == 2)
-        // {
-        // b.setCaption(b.getCaption() + " <span class=\"valo-menu-badge\">123</span>");
-        // }
-        // b.setHtmlContentAllowed(true);
-        // b.setPrimaryStyleName("valo-menu-item");
-        // b.setIcon(testIcon.get());
-        // b.setId("menu-btn-id-" + (count + 1));
-        // menuItemsLayout.addComponent(b);
-        // count++;
-        // }
+		addMenuEntry("../mytheme/img/chart.png", MarketView.MARKET, "Market");
 
         return menu;
     }
@@ -201,7 +202,6 @@ public class VaadinUI extends UI
     {
         final MenuBar chart = new MenuBar();
         chart.addStyleName("user-menu");
-        // MenuItem chartItem = chart.addItem("", new ThemeResource(img), addMenuCommand(command));
         MenuItem chartItem = chart.addItem(command, null, addMenuCommand(command));
         chartItem.setDescription(description);
         menu.addComponent(chart);

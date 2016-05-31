@@ -13,6 +13,19 @@
 	<description>Comercio-Server</description>
 
 	<dependencies>
+		<!-- Needed for YahooFinance -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-push</artifactId>
+		</dependency>	
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient-cache</artifactId>		    
+		</dependency>		
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>		    
@@ -40,7 +53,6 @@
 		<dependency>
 		    <groupId>org.apache.xbean</groupId>
 		    <artifactId>xbean-spring</artifactId>
-		    <version>3.7</version>
 		</dependency>		
 		<dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,6 +86,14 @@
 			<groupId>de.goldmann.commercio</groupId>
 			<artifactId>utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+       <dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -81,19 +101,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-        </dependency>
-        <!-- dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-jms</artifactId>
-            <scope>test</scope>
-        </dependency-->
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.yahoofinance-api</groupId>
+		    <artifactId>YahooFinanceAPI</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

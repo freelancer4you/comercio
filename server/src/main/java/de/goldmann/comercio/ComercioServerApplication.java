@@ -2,11 +2,14 @@ package de.goldmann.comercio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class ComercioServerApplication implements CommandLineRunner
 {
     private static final Logger logger = LoggerFactory.getLogger(ComercioServerApplication.class);
@@ -45,6 +48,13 @@ public class ComercioServerApplication implements CommandLineRunner
 
     public static void main(String[] args)
     {
+		// Optionally remove existing handlers attached to j.u.l root logger
+		SLF4JBridgeHandler.removeHandlersForRootLogger(); // (since SLF4J 1.6.5)
+
+		// add SLF4JBridgeHandler to j.u.l's root logger, should be done once
+		// during
+		// the initialization phase of your application
+		SLF4JBridgeHandler.install();
         SpringApplication.run(ComercioServerApplication.class, args);
     }
 

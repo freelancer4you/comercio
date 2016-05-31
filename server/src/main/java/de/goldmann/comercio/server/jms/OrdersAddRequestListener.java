@@ -79,7 +79,8 @@ public class OrdersAddRequestListener implements MessageListener
                     user.getOrders().add(order);
 
                     final de.goldmann.comercio.transfer.down.OrderRow response = new de.goldmann.comercio.transfer.down.OrderRow(
-                            order.getId(), user.getAccount().getLogin(), order.getStamp().getTime(),
+							order.getId(), user.getAccount().getLogin(), stock.getName(), order.getStamp().getTime(),
+							order.getDirection(),
                             row.getLineNumber());
 
                     final String responseStr = mapper.writeValueAsString(response);
